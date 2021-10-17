@@ -23,6 +23,12 @@ const dummyData = {
         rate: 0.258,
       },
     ],
+    Tata:[
+      {
+        model: "nexon",
+        rate:0.153,
+      }
+    ]
   },
   Diesel: {
     Mahindra: [
