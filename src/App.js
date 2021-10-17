@@ -1,32 +1,72 @@
 import { useState } from "react";
 import "./App.css";
 
-const fuelType = ["Diesel", "Petrol"];
+const dummyData = {
+  Petrol: {
+    Mahindra: [
+      {
+        model: "KUV 100 NXT(Hatchback)",
+        rate: 0.15,
+      },
+      {
+        model: "Alturas(SUV)",
+        rate: 0.258,
+      },
+    ],
+    Maruti: [
+      {
+        model: "Swift",
+        rate: 0.15,
+      },
+      {
+        model: "Brezza",
+        rate: 0.258,
+      },
+    ],
+  },
+  Diesel: {
+    Mahindra: [
+      {
+        model: "KUV 100 NXT(Hatchback)",
+        rate: 0.15,
+      },
+    ],
+  },
+};
 
 function App() {
   const [distance, setDistance] = useState(0);
-  const [selectedFuelType, setSelectedFuelType] = useState("Diesel");
-  const [fuelConsumption, setFuelConsumption] = useState(0);
+  const [selectedFuelType, setSelectedFuelType] = useState(null);
+  const [selectedBrand, setSelectedBrand] = useState(null);
+  const [selectedModel, setSelectedModel] = useState(null);
 
   const handleDistanceChange = (e) => {
     setDistance(e.target.value);
+    console.log(e.target.value);
   };
 
   const handleSelectedType = (e) => {
     setSelectedFuelType(e.target.value);
+    console.log(e.target.value);
   };
 
-  const handleFuelConsumptionChange = (e) => {
-    setFuelConsumption(e.target.value);
+  const handleSelectedBrand = (e) => {
+    setSelectedBrand(e.target.value);
+    console.log(e.target.value);
+  };
+
+  const handleSelectedModel = (e) => {
+    setSelectedModel(e.target.value);
+    console.log(e.target.value);
   };
 
   return (
     <div className="App container">
-      <h1>Hello world</h1>
+      <h1>Vehicle emission rate calculator</h1>
 
       <div className="container form">
         <div className="form-group">
-          <label htmlFor="distance">Distance travelled</label>
+          <label htmlFor="distance">Distance travelled (in KMs)</label>
           <input
             type="number"
             id="distance"
@@ -43,7 +83,8 @@ function App() {
             onChange={handleSelectedType}
             value={selectedFuelType}
           >
-            {fuelType.map((fuelType) => (
+            <option value={null}>-- select --</option>
+            {Object.keys(dummyData).map((fuelType) => (
               <option value={fuelType} key={fuelType}>
                 {fuelType}
               </option>
@@ -51,21 +92,49 @@ function App() {
           </select>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="fuelConsumption" className="h1">
-            Fuel consumption
-          </label>
-          <input
-            type="number"
-            id="fuelConsumption"
-            value={fuelConsumption}
-            onChange={handleFuelConsumptionChange}
-          />
-        </div>
+        {selectedFuelType && (
+          <div className="form-group">
+            <label htmlFor="selectedBrand">Brand name</label>
+            <select
+              id="selectedBrand"
+              onChange={handleSelectedBrand}
+              value={selectedBrand}
+            >
+              <option value={null}>-- select --</option>
+              {Object.keys(dummyData[selectedFuelType]).map((brand) => (
+                <option value={brand} key={brand}>
+                  {brand}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
-        <div className="form-group">
-          <button className="button-outline">Calculate</button>
-        </div>
+        {selectedBrand && (
+          <div className="form-group">
+            <label htmlFor="selectedBrand">Model name</label>
+            <select
+              id="selectedBrand"
+              onChange={handleSelectedModel}
+              value={selectedModel}
+            >
+              <option value={null}>-- select --</option>
+              {dummyData[selectedFuelType][selectedBrand].map((item) => (
+                <option value={item.rate}>{item.model}</option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        <br />
+
+        {selectedModel && (
+          <div className="form-group">
+            <label htmlFor="fuelConsumption" className="h1">
+              Carbon dioxide emission : {selectedModel * distance} kg
+            </label>
+          </div>
+        )}
       </div>
     </div>
   );
